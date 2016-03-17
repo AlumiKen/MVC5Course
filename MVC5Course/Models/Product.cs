@@ -24,8 +24,7 @@ namespace MVC5Course.Models
         public int ProductId { get; set; }        
         [Required(ErrorMessage = "產品名稱為必填欄位")]
         public string ProductName { get; set; }        
-        [Required(ErrorMessage = "價格為必填欄位")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
+        [Required(ErrorMessage = "價格為必填欄位")]        
         public Nullable<decimal> Price { get; set; }
         [Required]
         public Nullable<bool> Active { get; set; }
