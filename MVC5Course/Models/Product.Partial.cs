@@ -29,7 +29,7 @@ namespace MVC5Course.Models
                 //yield return new ValidationResult("庫存不可超過100個", new string[] { "Stock" });
             }
 
-            yield return new ValidationResult("");
+            yield return ValidationResult.Success;
         }
     }
 

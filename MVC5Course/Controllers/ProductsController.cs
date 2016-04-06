@@ -10,14 +10,38 @@ using MVC5Course.Models;
 
 namespace MVC5Course.Controllers
 {
-    public class ProductsController : Controller
-    {
-        private FabricsEntities db = new FabricsEntities();
+    public class ProductsController : BaseController
+    {        
+        //private FabricsEntities db = new FabricsEntities();
 
         // GET: Products
         public ActionResult Index()
         {
-            return View(db.Products.ToList());
+            //View.Model = repoProduct.All() 等同於return View(repoProduct.All())
+
+            return View(repoProduct.All().Take(5));
+        }
+
+        [HttpPost]
+        public ActionResult Index(IList<BatchUpdateProduct> data)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var item in data)
+                {
+                    var product = repoProduct.Find(item.ProductId);
+                    product.Price = item.Price;
+                    product.Active = item.Active;
+                    product.Stock = item.Stock;
+                }
+
+                repoProduct.UnitOfWork.Commit();
+                TempData["EditProductMsg"] = data.Count + " 筆資料批次更新成功";
+                return RedirectToAction("Index");
+            }
+
+            ViewData.Model = repoProduct.All().Take(5);
+            return View();            
         }
 
         // GET: Products/Details/5
@@ -27,7 +51,7 @@ namespace MVC5Course.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            Product product = repoProduct.Find(id.Value);
             if (product == null)
             {
                 return HttpNotFound();
@@ -50,8 +74,8 @@ namespace MVC5Course.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Products.Add(product);
-                db.SaveChanges();
+                repoProduct.Add(product);
+                repoProduct.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +89,7 @@ namespace MVC5Course.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            Product product = repoProduct.Find(id.Value);
             if (product == null)
             {
                 return HttpNotFound();
@@ -82,8 +106,11 @@ namespace MVC5Course.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
+                var dbProduct = (FabricsEntities)repoProduct.UnitOfWork.Context;
+                dbProduct.Entry(product).State = EntityState.Modified;
+                repoProduct.UnitOfWork.Commit();
+
+                TempData["EditProductMsg"] = product.ProductName + " 更新成功";
                 return RedirectToAction("Index");
             }
             return View(product);
@@ -96,7 +123,7 @@ namespace MVC5Course.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = db.Products.Find(id);
+            Product product = repoProduct.Find(id.Value);
             if (product == null)
             {
                 return HttpNotFound();
@@ -109,9 +136,9 @@ namespace MVC5Course.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Product product = db.Products.Find(id);
-            db.Products.Remove(product);
-            db.SaveChanges();
+            Product product = repoProduct.Find(id);
+            repoProduct.Delete(product);
+            repoProduct.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +146,8 @@ namespace MVC5Course.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                var dbProduct = (FabricsEntities)repoProduct.UnitOfWork.Context;
+                dbProduct.Dispose();
             }
             base.Dispose(disposing);
         }

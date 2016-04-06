@@ -8,7 +8,14 @@
 
 <p>
     @Html.ActionLink("Create New", "Create")
+    @if (TempData["EditProductMsg"] != null)
+    {                
+        @Html.Label(TempData["EditProductMsg"].ToString(), new { style = "color:blue" })
+    }    
 </p>
+
+@using (Html.BeginForm("Index", "Products"))
+{
 <table class="table">
     <tr>
         <th>
@@ -26,26 +33,41 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@{ 
+    var data = Model.ToArray();
+}
+
+@for (int i = 0; i < data.Length; i++)
+{
+    @Html.HiddenFor(modelItem => data[i].ProductId)
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.ProductName)
+            @Html.DisplayFor(modelItem => data[i].ProductName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Price)
+            @Html.EditorFor(modelItem => data[i].Price)
+            <br />
+            @Html.ValidationMessageFor(modelItem => data[i].Price, "", new { @class = "text-danger" })
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Active)
+            @Html.EditorFor(modelItem => data[i].Active)
+            <br />
+            @Html.ValidationMessageFor(modelItem => data[i].Active, "", new { @class = "text-danger" })
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Stock)
+            @Html.EditorFor(modelItem => data[i].Stock)
+            <br />
+            @Html.ValidationMessageFor(modelItem => data[i].Stock, "", new { @class = "text-danger" })
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ProductId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProductId })
+            @Html.ActionLink("Edit", "Edit", new { id = data[i].ProductId }) |
+            @Html.ActionLink("Details", "Details", new { id = data[i].ProductId }) |
+            @Html.ActionLink("Delete", "Delete", new { id = data[i].ProductId })
         </td>
     </tr>
 }
 
+
 </table>
+<input type="submit" value="批次更新" />
+}
