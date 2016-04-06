@@ -7,13 +7,14 @@ using System.Web.Mvc;
 
 namespace MVC5Course.Controllers
 {
+    [ExcuteActionSpan]
     public abstract class BaseController : Controller
     {
         protected ProductRepository repoProduct = RepositoryHelper.GetProductRepository();
 
-        protected override void HandleUnknownAction(string actionName)
-        {
-            this.RedirectToAction("Index", "Home").ExecuteResult(this.ControllerContext);
-        }
+        //protected override void HandleUnknownAction(string actionName)
+        //{
+        //    this.RedirectToAction("Index", "Home").ExecuteResult(this.ControllerContext);
+        //}
     }   
 }

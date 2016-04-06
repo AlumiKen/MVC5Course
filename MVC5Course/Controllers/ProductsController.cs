@@ -9,7 +9,8 @@ using System.Web.Mvc;
 using MVC5Course.Models;
 
 namespace MVC5Course.Controllers
-{
+{    
+    [Authorize]
     public class ProductsController : BaseController
     {        
         //private FabricsEntities db = new FabricsEntities();
@@ -100,20 +101,25 @@ namespace MVC5Course.Controllers
         // POST: Products/Edit/5
         // 若要免於過量張貼攻擊，請啟用想要繫結的特定屬性，如需
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
-        [HttpPost]
+        [HttpPost]// <= action filter/selector
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductId,ProductName,Price,Active,Stock")] Product product)
+        //public ActionResult Edit([Bind(Include = "ProductId,ProductName,Price,Active,Stock")] Product product)
+        public ActionResult Edit(int id, FormCollection form)
         {
-            if (ModelState.IsValid)
+            var products = repoProduct.Find(id);
+
+            //模型繫結延遲驗證
+            //ModelState.AddModelError
+            if (TryUpdateModel(products, new string[] { "ProductId","ProductName","Active","Price","Stock" }))
             {
-                var dbProduct = (FabricsEntities)repoProduct.UnitOfWork.Context;
-                dbProduct.Entry(product).State = EntityState.Modified;
+                //var dbProduct = (FabricsEntities)repoProduct.UnitOfWork.Context;
+                //dbProduct.Entry(product).State = EntityState.Modified;
                 repoProduct.UnitOfWork.Commit();
 
-                TempData["EditProductMsg"] = product.ProductName + " 更新成功";
+                TempData["EditProductMsg"] = products.ProductName + " 更新成功";
                 return RedirectToAction("Index");
             }
-            return View(product);
+            return View(products);
         }
 
         // GET: Products/Delete/5
