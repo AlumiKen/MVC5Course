@@ -1,0 +1,91 @@
+﻿@model IEnumerable<MVC5Course.Models.Client>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Clients";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Index", "Clients", FormMethod.Get, new { name = "form1" }))
+{
+<p>
+    @Html.ActionLink("Create New", "Create") |
+    性別:
+    @Html.DropDownList("Gender", null, "全部", new { onchange = "this.form.submit();" }) |
+    Rating:
+    @Html.DropDownList("CreditRating", null, "全部", new { onchange = "this.form.submit();" }) |
+    @*@Html.Editor("CreditRating1", "CreditRatingDropDownList")*@
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MiddleName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreditRating)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MiddleName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Gender)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateOfBirth)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreditRating)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.ClientId }) |
+            @Html.ActionLink("Details", "Details", new { id = item.ClientId }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.ClientId })
+        </td>
+    </tr>
+}
+
+</table>
+
+@Html.Hidden("page")
+@Html.PagedListPager(Model as IPagedList, p => Url.Action("Index", new { p }))
+
+}
+
+@section scripts{
+    <script>
+        $(function () {
+            $('.pagination-container a').on('click', function () {
+                var href = $(this).attr('href');//找到分頁的超連結
+                var pageNumber = href.substring(href.indexOf('?p=') + 3);//抓出分頁值
+                document.form1.page.value = pageNumber;//把值塞到page隱藏欄位
+                document.form1.submit();
+                return false;
+            })
+        })
+    </script>
+}
