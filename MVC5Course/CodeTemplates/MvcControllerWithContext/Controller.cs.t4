@@ -87,7 +87,7 @@ namespace <#= Namespace #>
         includeExpressions = String.Join("", relatedProperties.Values.Select(property => String.Format(".Include({0} => {0}.{1})", lambdaVar, property.AssociationPropertyName)));
 #>
 <# if(!String.IsNullOrEmpty(includeExpressions)) { #>
-            var <#= entitySetVar #> = db.<#= entitySetName #><#= includeExpressions #>.OrderBy(p => p.OrderId);
+            var <#= entitySetVar #> = db.<#= entitySetName #><#= includeExpressions #>.OrderBy(p => ｐ.<#= primaryKeyName #>);
 <#		if (UseAsync) { #>
             return View(await <#= entitySetVar #>.ToListAsync());
 <#		} else { #>
