@@ -2,6 +2,8 @@
 <#@ output extension=".cshtml" #>
 <#@ include file="Imports.include.t4" #>
 @model IEnumerable<#= "<" + ViewDataTypeName + ">" #>
+@using PagedList
+@using PagedList.Mvc
 <#
 // The following chained if-statement outputs the file header code and markup for a partial view, a view using a layout page, or a regular view.
 if(IsPartialView) {
@@ -127,3 +129,4 @@ if(!IsPartialView && !IsLayoutPageSelected) {
 }
 #>
 <#@ include file="ModelMetadataFunctions.cs.include.t4" #>
+@Html.PagedListPager(Model as IPagedList, p => Url.Action("Index", new { page = p }))
