@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<a href="@Url.Action("FileTest")?dl=1">
+    <img src="@Url.Action("FileTest")" alt="pikachu.png" />
+</a>
+
+<button type="button" id="getProduct">抓產品資料</button>
+<input type="text" id="productId" />
+
+@section Scripts{
+    <script>
+        $("#getProduct").on('click',
+            function () {
+                var productId = $('#productId').val();
+                $.get('@Url.Action("JsonTest", new { id = 5 })'
+                        , ''
+                        , function (data) {
+                             console.log(data)
+                          }
+                     );
+            });
+    </script>
+}
