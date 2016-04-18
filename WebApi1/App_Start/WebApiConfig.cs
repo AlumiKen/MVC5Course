@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using WebApi1.Controllers;
 
 namespace WebApi1
 {
@@ -9,6 +10,7 @@ namespace WebApi1
     {
         public static void Register(HttpConfiguration config)
         {
+            config.Filters.Add(new 錯誤捕捉Attribute());
             // Web API 設定和服務
 
             // Web API 路由
