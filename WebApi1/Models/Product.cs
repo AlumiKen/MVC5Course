@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace WebApi1.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
+
+        [JsonIgnore]
         public decimal Price { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }
